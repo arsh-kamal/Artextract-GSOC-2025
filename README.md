@@ -1,67 +1,110 @@
-# ArtExtract GSoC 2025 - Task 1: Convolutional-Recurrent Architectures
+ArtExtract GSoC 2025 - Task 1: Convolutional-Recurrent Architectures
 
-## Project Overview
+Project Overview
 This repository contains my submission for Task 1 of the Google Summer of Code (GSoC) 2025 evaluation test for the "Painting in a Painting" project under the ArtExtract initiative, hosted by the HumanAI Umbrella Organization and the University of Alabama. The task focuses on building a convolutional-recurrent neural network (CNN-RNN) to classify paintings by artist using the WikiArt dataset, as specified in the project guidelines.
 
-**Idea Description:**
-- The goal is to leverage a hybrid CNN-RNN model to extract spatial features (via CNN) and sequential patterns (via RNN) from painting images, enabling artist classification. This approach combines ResNet18 for feature extraction with a GRU (Gated Recurrent Unit) to process features sequentially, offering a robust method for art analysis. The model is trained and evaluated on a subset of the WikiArt dataset, with metrics like accuracy, precision, recall, F1-score, and a confusion matrix, plus outlier detection for paintings with low-confidence predictions.
+Idea Description:
+The goal is to leverage a hybrid CNN-RNN model to extract spatial features (via CNN) and sequential patterns (via RNN) from painting images, enabling artist classification. This approach combines ResNet18 for feature extraction with a GRU (Gated Recurrent Unit) to process features sequentially, offering a robust method for art analysis. The model is trained and evaluated on a subset of the WikiArt dataset, with metrics like accuracy, precision, recall, F1-score, and a confusion matrix, plus outlier detection for paintings with low-confidence predictions.
+Mentors: Emanuele Usai, Sergei Gleyzer (University of Alabama)
+Submission Date: March 2025
+Submitted by: Arshdeep Kamal
 
-**Mentors:** Emanuele Usai, Sergei Gleyzer (University of Alabama)  
-**Submission Date:** March 2025  
-**Submitted by:** Arshdeep Kamal
-
----
-
-## Repository Structure
+Repository Structure
 This repository includes the following files and directories:
 
-### Root Directory
-- **`.gitignore`**  
-  - **Purpose:** Excludes large or unnecessary files from version control.
-  - **Contents:** Ignores the `WikiArt/wikiart/` directory containing the raw image dataset to keep the repository lightweight. The dataset is sourced externally (see below).
+Root Directory
+.gitignore
+Purpose: Excludes large or unnecessary files from version control.
+Contents: Ignores the WikiArt/wikiart/ directory containing the raw image dataset to keep the repository lightweight. The dataset is sourced externally (see below).
+Artextract-GSOC25/ Directory
 
-### `Artextract-GSOC25/` Directory
-- **`artextract_task1.ipynb`**  
-  - **Purpose:** Main Jupyter notebook implementing Task 1.
-  - **Contents:**
-    - Loads `labels.csv` (preprocessed dataset metadata).
-    - Defines a custom `WikiArtDataset` class for PyTorch data loading.
-    - Implements a `ConvRecurrentModel` combining ResNet18 (CNN) and GRU (RNN).
-    - Trains the model on the WikiArt dataset (80% train, 20% test split).
-    - Evaluates performance with classification metrics (accuracy, precision, recall, F1-score, confusion matrix).
-    - Detects outliers (correct predictions with confidence < 0.5).
-    - Saves the trained model as `conv_recurrent_model.pth` (not included due to size).
-  - **Execution:** Run in Jupyter Notebook with dependencies (`torch`, `torchvision`, `pandas`, etc.) installed.
+artextract_task1.ipynb
+Purpose: Main Jupyter notebook implementing Task 1.
+Contents:
+Loads labels.csv (preprocessed dataset metadata).
+Defines a custom WikiArtDataset class for PyTorch data loading.
+Implements a ConvRecurrentModel combining ResNet18 (CNN) and GRU (RNN).
+Trains the model on the WikiArt dataset (80% train, 20% test split).
+Evaluates performance with classification metrics (accuracy, precision, recall, F1-score, confusion matrix).
+Detects outliers (correct predictions with confidence < 0.5).
+Saves the trained model as conv_recurrent_model.pth (not included due to size).
+Execution: Run in Jupyter Notebook with dependencies (torch, torchvision, pandas, etc.) installed.
 
-- **`artextract_task1.pdf`**  
-  - **Purpose:** PDF version of `artextract_task1.ipynb` with executed outputs.
-  - **Contents:** Includes code, dataset previews (e.g., "First few rows of labels.csv:"), training logs (e.g., epoch losses), and evaluation results (metrics and outliers). Generated using `wkhtmltopdf` from the HTML export of the notebook.
+artextract_task1.pdf
+Purpose: PDF version of artextract_task1.ipynb with executed outputs.
+Contents: Includes code, dataset previews (e.g., "First few rows of labels.csv:"), training logs (e.g., epoch losses), and evaluation results (metrics and outliers). Generated using wkhtmltopdf from the HTML export of the notebook.
+WikiArt/ Directory
 
+prepare_dataset.pdf
+Purpose: Python script to preprocess the WikiArt dataset.
+Contents:
+Reads artist_train.csv from the WikiArt dataset source.
+Parses file paths into style, artist, and image names.
+Validates image paths against the wikiart/ directory (excluded from repo).
+Outputs labels.csv with 10,676 valid image paths and artist labels.
+Execution: Run with python prepare_dataset.py in the WikiArt/ directory with the dataset present.
 
-- **`prepare_dataset.py`**  
-  - **Purpose:** Python script to preprocess the WikiArt dataset.
-  - **Contents:**
-    - Reads `artist_train.csv` from the WikiArt dataset source.
-    - Parses file paths into style, artist, and image names.
-    - Validates image paths against the `wikiart/` directory (excluded from repo).
-    - Outputs `labels.csv` with 10,676 valid image paths and artist labels.
-  - **Execution:** Run with `python prepare_dataset.py` in the `WikiArt/` directory with the dataset present.
-  - 
-### `WikiArt/` Directory
-- **`labels.csv`**  
-  - **Purpose:** Preprocessed dataset metadata generated by `prepare_dataset.py`.
-  - **Contents:** Contains 10,676 rows, each with an `image_path` (e.g., `/Users/Dell/Documents/TASK1/WikiArt/wikiart/Realism/vincent-van-gogh_pine-trees-in-the-fen-1884.jpg`) and `label` (artist ID, e.g., 22 for Vincent van Gogh). Used by `artextract_task1.ipynb` for training and evaluation.
+labels.csv in WikiArt
+Purpose: Preprocessed dataset metadata generated by prepare_dataset.py.
+Contents: Contains 10,676 rows, each with an image_path (e.g., /Users/Dell/Documents/TASK1/WikiArt/wikiart/Realism/vincent-van-gogh_pine-trees-in-the-fen-1884.jpg) and label (artist ID, e.g., 22 for Vincent van Gogh). Used by artextract_task1.ipynb for training and evaluation.
+Dataset
+Source: The WikiArt dataset is sourced from ArtGAN WikiArt Dataset.
+Processing: Due to its large size (10,676+ images), the raw wikiart/ folder is excluded from this repository. Instead, prepare_dataset.py processes artist_train.csv locally to generate labels.csv, which is included here.
+Note: To replicate, download the dataset and place it in WikiArt/wikiart/ before running prepare_dataset.py.
 
----
+ArtExtract GSoC 2025 - Task 2: Similarity
+Project Overview
+This repository contains my submission for Task 2 of the Google Summer of Code (GSoC) 2025 evaluation test for the "Painting in a Painting" project under the ArtExtract initiative, hosted by the HumanAI Umbrella Organization and the University of Alabama. The task focuses on building a model to find similarities in paintings, such as portraits with similar faces or poses, using the National Gallery of Art (NGA) open dataset.
 
-## Dataset
-- **Source:** The WikiArt dataset is sourced from [ArtGAN WikiArt Dataset](https://github.com/cs-chan/ArtGAN/blob/master/WikiArt%20Dataset/README.md).
-- **Processing:** Due to its large size (10,676+ images), the raw `wikiart/` folder is excluded from this repository. Instead, `prepare_dataset.py` processes `artist_train.csv` locally to generate `labels.csv`, which is included here.
-- **Note:** To replicate, download the dataset and place it in `WikiArt/wikiart/` before running `prepare_dataset.py`.
+Idea Description:
+The goal is to use a Siamese Network to identify similarities between painting pairs by learning image embeddings. This approach employs ResNet18 to extract features, trained with contrastive loss to minimize distance between similar portraits (same artist) and maximize it for dissimilar ones. The model uses 10 manually downloaded NGA portraits, generating 45 pairs, and is evaluated with cosine similarity, accuracy, precision, recall, and MSE.
 
----
+Mentors: Emanuele Usai, Sergei Gleyzer (University of Alabama)
+Submission Date: March 2025
+Submitted by: Arshdeep Kamal
 
-## How to Run
-1. **Install Dependencies**:  
-   ```bash
-   pip install torch torchvision pandas numpy scikit-learn jupyter
+Repository Structure
+This repository includes the following files and directories for Task 2:
+
+Root Directory
+.gitignore
+Purpose: Excludes large or unnecessary files from version control.
+Contents: Ignores the WikiArt/nga_portraits/ directory containing the raw image dataset to keep the repository lightweight. The dataset is sourced externally (see below).
+Artextract-GSOC25/ Directory
+
+artextract_task2.ipynb
+Purpose: Main Python script implementing Task 2.
+Contents:
+Loads nga_similarity_pairs.csv (preprocessed dataset metadata).
+Defines a custom NGAPairDataset class for PyTorch data loading.
+Implements a SiameseNetwork with ResNet18 to learn embeddings.
+Trains the model on the NGA dataset (80% train, 20% test split).
+Evaluates performance with similarity metrics (cosine similarity, accuracy, precision, recall, MSE).
+Saves the trained model as siamese_model.pth (not included due to size).
+Execution: Run with python artextract_task2.py in the Artextract-GSOC25/ directory with dependencies installed.
+
+artextract_task2.pdf
+Purpose: PDF version of artextract_task2.py output.
+Contents: Includes code output, dataset previews (e.g., "First few pairs:"), training logs (e.g., epoch losses), and evaluation results (metrics). Generated by redirecting script output to a text file and converting to PDF manually.
+WikiArt/ Directory
+
+prepare_similarity_dataset.pdf
+Purpose: Python script to preprocess the NGA dataset.
+Contents:
+Uses 10 manually downloaded NGA portrait images from WikiArt/nga_portraits/.
+Assigns alternating artist labels (e.g., artist_0, artist_1) to create similar/dissimilar pairs.
+Outputs nga_similarity_pairs.csv with 45 valid image pairs and labels.
+Execution: Run with python prepare_similarity_dataset.py in the WikiArt/ directory with images present.
+
+nga_similarity_pairs.csv in WikiArt
+Purpose: Preprocessed dataset metadata generated by prepare_similarity_dataset.py.
+Contents: Contains 45 rows, each with image1 and image2 paths (e.g., /Users/Dell/Documents/TASK1/WikiArt/nga_portraits/the_apostle_paul_1942.9.59.jpg) and label (1 for same artist, 0 for different). Used by artextract_task2.py for training and evaluation.
+
+Dataset
+Source: The NGA dataset metadata is sourced from NGA Open Data, with images manually downloaded from https://images.nga.gov/.
+Processing: Due to the lack of direct image URLs in objects.csv, 10 portraits were manually downloaded and placed in WikiArt/nga_portraits/. prepare_similarity_dataset.py generates nga_similarity_pairs.csv from these.
+Note: To replicate, download 10+ NGA portraits and place them in WikiArt/nga_portraits/ before running prepare_similarity_dataset.py.
+
+How to Run
+Install Dependencies:
+pip install torch torchvision pandas numpy scikit-learn jupyter requests pillow
